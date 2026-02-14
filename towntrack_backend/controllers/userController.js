@@ -27,7 +27,7 @@ exports.signup = async (req, res) => {
 
     await user.save();
 
-    
+
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -60,7 +60,16 @@ exports.login = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.json({ token });
+    const userPayload = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      address: user.address
+    };
+
+    res.json({ token, user: userPayload });
 
   } catch (err) {
     res.status(500).json({ error: err.message });
